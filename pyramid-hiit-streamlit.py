@@ -1,13 +1,14 @@
-# new_pyramid-hiit-streamlit.py
+# mobile_responsive_pyramid-hiit-streamlit.py
 import streamlit as st
 import time
 import json
 from pathlib import Path
 
+# Use 'wide' layout for desktop, let CSS handle mobile
 st.set_page_config(page_title="Pyramid HIIT Timer", page_icon="🔥", layout="wide")
 
 # ---------------------------
-# Config load/save
+# Config load/save (Unchanged)
 # ---------------------------
 def load_config():
     path = Path("hiit_config.json")
@@ -51,36 +52,70 @@ def save_config(cfg):
         json.dump(cfg, f, indent=2)
 
 # ---------------------------
-# Session state defaults
+# Session state defaults (Unchanged)
 # ---------------------------
 if "config" not in st.session_state:
     st.session_state.config = load_config()
 if "workout_started" not in st.session_state:
     st.session_state.workout_started = False
 if "round" not in st.session_state:
-    st.session_state.round = 1  # 1..9
+    st.session_state.round = 1
 if "exercise_index" not in st.session_state:
-    st.session_state.exercise_index = 0  # index within current round's list
+    st.session_state.exercise_index = 0
 if "selected_sequence" not in st.session_state:
     st.session_state.selected_sequence = "Classic HIIT"
 
 # ---------------------------
-# Styles (Adjusted for better fit)
+# Styles (ADJUSTED FOR RESPONSIVENESS)
 # ---------------------------
 st.markdown("""
 <style>
+/* Default styles for larger screens (compact layout) */
 .big-timer {
-    font-size: 80px; /* Reduced font size */
+    font-size: 80px;
     font-weight: bold;
     text-align: center;
-    padding: 20px; /* Reduced padding */
+    padding: 20px; 
     border-radius: 15px;
     margin: 10px 0;
-    height: 300px; /* Set a fixed height for visual stability */
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+.exercise-name {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+.exercise-gif { 
+    max-width: 100%;
+    max-height: 350px; 
+    object-fit: contain; 
+    margin: auto;
+    display: block;
+}
+.gif-blank    { height: 350px; }
+
+/* Mobile-Specific Styles: Shrink everything for screens <= 600px */
+@media (max-width: 600px) {
+    .big-timer {
+        font-size: 50px; /* Smaller font on mobile */
+        height: 150px;  /* Smaller box height on mobile */
+    }
+    .exercise-name {
+        font-size: 24px; /* Smaller exercise name */
+    }
+    .exercise-gif { 
+        max-height: 200px; /* Smaller GIF height */
+    }
+    .gif-blank {
+        height: 200px; /* Match placeholder height */
+    }
+}
+
+/* Color and general styles (Unchanged) */
 .work-phase {
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
@@ -89,35 +124,20 @@ st.markdown("""
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white;
 }
-.exercise-name {
-    font-size: 36px; /* Reduced font size */
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 5px; /* Reduced margin */
-}
 .phase-labels {
     text-align: center;
-    font-size: 20px; /* Reduced font size */
+    font-size: 20px;
     font-weight: bold;
-    margin: 5px 0 15px 0; /* Adjusted margin */
+    margin: 5px 0 15px 0;
 }
 .label-active { opacity: 1;   transition: opacity 0.4s ease; }
 .label-faded  { opacity: 0.2; transition: opacity 0.4s ease; }
 
-.exercise-gif { 
-    max-width: 100%; /* Ensure GIF scales to column width */
-    max-height: 350px; /* Slightly smaller max height */
-    object-fit: contain; 
-    margin: auto;
-    display: block;
-}
-.gif-blank    { height: 350px; } /* Must match max-height of gif */
-
 .pyramid-progress {
     text-align: center;
     font-size: 11px;
-    margin-top: 15px; /* Reduced margin */
-    padding: 10px; /* Reduced padding */
+    margin-top: 15px;
+    padding: 10px;
     background-color: #f8f9fa;
     border-radius: 10px;
 }
@@ -129,7 +149,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------
-# Pyramid order helpers
+# Pyramid order helpers (Unchanged)
 # ---------------------------
 PYRAMID_LABELS = ["1", "1-2", "1-2-3", "1-2-3-4", "1-2-3-4-5", "5-4-3-2", "5-4-3", "5-4", "5"]
 PYRAMID_INDICES = [
@@ -149,7 +169,7 @@ def round_exercises(round_num, full_list):
     return [full_list[i-1] for i in idxs]
 
 # ---------------------------
-# UI screens
+# UI screens (Button fix applied)
 # ---------------------------
 def show_setup_screen():
     st.title("🔥 Pyramid HIIT Timer")
@@ -176,16 +196,14 @@ def show_setup_screen():
 
     st.markdown("---")
     
-    # FIX: Ensure button is hidden by triggering rerun and immediately exiting the function.
+    # Button fix: Ensures the button is not drawn in the subsequent cycle
     if st.button("🚀 START WORKOUT", type="primary"):
         st.session_state.workout_started = True
         st.session_state.round = 1
         st.session_state.exercise_index = 0
         save_config(st.session_state.config)
         st.rerun()
-        # Explicit return to ensure no other setup elements are drawn 
-        # in the unlikely event the script continues before rerun takes full effect.
-        return 
+        return # Important: Exits the function immediately after rerun is called.
 
 def show_pyramid_progress():
     current = st.session_state.round - 1 
@@ -206,7 +224,7 @@ def show_workout_screen():
     st.session_state.exercise_index = min(st.session_state.exercise_index, len(curr_list) - 1)
     current_exercise = curr_list[st.session_state.exercise_index]
 
-    # --- Sidebar: show all exercises and highlight by NAME
+    # --- Sidebar: show all exercises and highlight by NAME (Unchanged)
     with st.sidebar:
         st.markdown("### 🏋️ Exercises")
         for i, ex in enumerate(exercises, 1):
@@ -216,14 +234,14 @@ def show_workout_screen():
         st.markdown("### 🧱 Pyramid Progress")
         show_pyramid_progress()
 
-    # Header + progress
+    # Header + progress (Unchanged)
     st.markdown(f"### Round {st.session_state.round} of {total_rounds}")
     st.progress((st.session_state.round - 1) / total_rounds)
 
     # Placeholders for dynamic content
     labels_ph = st.empty()
 
-    # Layout: GIF/Exercise Name (2/3) | Timer (1/3)
+    # Layout: GIF/Exercise Name (2/3) | Timer (1/3) (Layout is responsive due to CSS)
     gif_col, timer_col = st.columns([2, 1])
     
     # Placeholders inside columns
@@ -317,7 +335,7 @@ def show_workout_screen():
             st.rerun()
 
 # ---------------------------
-# Entrypoint
+# Entrypoint (Unchanged)
 # ---------------------------
 def main():
     if not st.session_state.workout_started:
