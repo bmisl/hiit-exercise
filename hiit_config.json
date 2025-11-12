@@ -1,8 +1,8 @@
 {
-  "work_time": 40,
-  "rest_between_exercises": 15,
-  "rest_between_rounds": 45,
-  "peak_rest": 75,
+  "work_time": 1,
+  "rest_between_exercises": 5,
+  "rest_between_rounds": 1,
+  "peak_rest": 3,
   "exercise_sequences": {
     "Classic HIIT": [
       "Burpees",
