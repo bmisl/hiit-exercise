@@ -1,0 +1,52 @@
+{
+  "work_time": 20,
+  "rest_between_exercises": 10,
+  "rest_between_rounds": 20,
+  "peak_rest": 30,
+  "exercise_sequences": {
+    "Classic HIIT": [
+      "Burpees",
+      "Mountain Climbers",
+      "Jump Squats",
+      "High Knees",
+      "Push-ups"
+    ],
+    "Core Focus": [
+      "Plank Jacks",
+      "Russian Twists",
+      "Bicycle Crunches",
+      "Mountain Climbers",
+      "Leg Raises"
+    ],
+    "Cardio Blast": [
+      "Jumping Jacks",
+      "High Knees",
+      "Butt Kicks",
+      "Jump Squats",
+      "Burpees"
+    ],
+    "Strength & Power": [
+      "Push-ups",
+      "Squat Jumps",
+      "Burpees",
+      "Lunge Jumps",
+      "Pike Push-ups"
+    ]
+  },
+  "exercise_images": {
+    "Burpees": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/burpee-1457045324.gif?resize=1400:*",
+    "Mountain Climbers": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/mountainclimber-1472061303.gif?resize=1400:*",
+    "Jump Squats": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquatjump-1457041758.gif?resize=1400:*",
+    "High Knees": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/highkneerun-1457044203.gif?resize=1400:*",
+    "Push-ups": "https://hips.hearstapps.com/hmg-prod/images/pushup-1462808858.gif?resize=1400:*",
+    "Plank Jacks": "https://media.giphy.com/media/l378AEZceMNl1JTfW/giphy.gif",
+    "Russian Twists": "https://media.giphy.com/media/1qfDuQzxKWaq4cjBVJ/giphy.gif",
+    "Bicycle Crunches": "https://media.giphy.com/media/26FPpSuhgHvYo9Kyk/giphy.gif",
+    "Leg Raises": "https://media.giphy.com/media/3o7TKqnN349PBUtGFO/giphy.gif",
+    "Jumping Jacks": "https://media.giphy.com/media/3oEduWFBrKjvf9DFiE/giphy.gif",
+    "Butt Kicks": "https://media.giphy.com/media/l0HlHcuzAjhMQ2m0U/giphy.gif",
+    "Squat Jumps": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquatjump-1457041758.gif?resize=1400:*",
+    "Lunge Jumps": "https://tenor.com/view/afundo-gif-12659523759178076149.gif",
+    "Pike Push-ups": "https://media.giphy.com/media/3o7TKqnN349PBUtGFO/giphy.gif"
+  }
+}
