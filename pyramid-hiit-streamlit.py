@@ -373,7 +373,8 @@ def show_workout_screen():
     for t in range(work_time, 0, -1):
         current_elapsed = elapsed_time_sec + (work_time - t)
         progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
-        progress_bar.progress(current_elapsed / st.session_state.total_time_seconds)
+        progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
+        progress_bar.progress(progress_value)
         timer_ph.markdown(f"<div class='big-timer work-phase'>{t}</div>", unsafe_allow_html=True)
         time.sleep(1)
 
@@ -399,7 +400,8 @@ def show_workout_screen():
         for t in range(rest_duration, 0, -1):
             current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
             progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
-            progress_bar.progress(current_elapsed / st.session_state.total_time_seconds)
+            progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
+            progress_bar.progress(progress_value)
             timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
             time.sleep(1)
 
@@ -445,7 +447,8 @@ def show_workout_screen():
     for t in range(rest_duration, 0, -1):
         current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
         progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
-        progress_bar.progress(current_elapsed / st.session_state.total_time_seconds)
+        progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
+        progress_bar.progress(progress_value)
         timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
         time.sleep(1)
 
