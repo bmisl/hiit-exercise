@@ -29,15 +29,29 @@ def load_config():
             "Jump Squats": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquatjump-1457041758.gif?resize=1400:*",
             "High Knees": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/highkneerun-1457044203.gif?resize=1400:*",
             "Push-ups": "https://hips.hearstapps.com/hmg-prod/images/pushup-1462808858.gif?resize=1400:*",
-            "Plank Jacks": "https://media.giphy.com/media/l378AEZceMNl1JTfW/giphy.gif",
-            "Russian Twists": "https://media.giphy.com/media/1qfDuQzxKWaq4cjBVJ/giphy.gif",
-            "Bicycle Crunches": "https://media.giphy.com/media/26FPpSuhgHvYo9Kyk/giphy.gif",
-            "Leg Raises": "https://media.giphy.com/media/3o7TKqnN349PBUtGFO/giphy.gif",
-            "Jumping Jacks": "https://media.giphy.com/media/3oEduWFBrKjvf9DFiE/giphy.gif",
-            "Butt Kicks": "https://media.giphy.com/media/l0HlHcuzAjhMQ2m0U/giphy.gif",
+            "Stepup": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/stepup-1457044957.gif?resize=1400:*", 
+            "Jumping Jacks": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/jumpingjack-1457045563.gif?resize=1400:*",
             "Squat Jumps": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquatjump-1457041758.gif?resize=1400:*",
-            "Lunge Jumps": "https://tenor.com/view/afundo-gif-12659523759177114173.gif", 
-            "Pike Push-ups": "https://media.giphy.com/media/3o7TKqnN349PBUtGFO/giphy.gif",
+            "Y Superman": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/supermany-1472154643.gif",
+            "Twisting Situp": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/situptwisting-1472152218.gif?resize=1400:*",
+            "Russian Twists": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/russiantwistfeetraised-1472133891.gif?resize=1400:*",
+            "Russian Twists2": "https://media4.giphy.com/media/cpKD9u3S25xYL8tcbr/giphy.gif",
+            "V Ups": "https://media1.popsugar-assets.com/files/thumbor/wclUn2vpiB8j1l9Sry5XL35SyLs/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2017/06/05/906/n/1922729/4a427ce25102cba0_V-Ups.gif",
+            "Hollow hold": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/workouts/2016/03/lyinghollowbodyhold-1457044774.gif?crop=1xw:1xh;center,top&resize=480:*",
+            "Hanging Leg Raises": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/workouts/2017/05/hanginglegraise-1496161341.gif",
+            "Plank": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/plank-1457045584.gif?resize=1400:*",
+            "Plank Jacks": "https://media1.popsugar-assets.com/files/thumbor/E5X9t2h9kSYqGlWEe1zxtvusMOY/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2016/05/10/225/n/1922729/e95be01486710f18_8a0b7913bd7d4ec3_PlankJack/i/Plank-Jack.gif",
+            "Bicycle Crunches": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/bicycle-1472058017.gif?resize=980:*",
+            "Crunches": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/crunch-1457102356.gif?crop=1xw:0.75xh;center,top&resize=1200:*",
+            "Bent Leg Raises": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/legraise-1472054568.gif?resize=640:*",
+            "Leg Raises": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/legraisesinglelegalternating-1472061028.gif?crop=1xw:0.75xh;center,top&resize=1200:*",
+            "Standing Leg Raises": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/standinglegraise-1457044676.gif?crop=1xw:1xh;center,top&resize=1200:*",
+            "T Superman": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/supermant-1472154358.gif?resize=1400:*",
+            "Lunge Split Squat With Kettlebell": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/dumbbellbulgariangobletsplitsquat-1457046602.gif",
+            "Lunge Jumps": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/splitjump-1457044565.gif", 
+            "Lunge": "https://media.tenor.com/-YiEMDDCOwoAAAAM/afundo.gif", 
+            "Butt Kicks": "https://spotebi.com/wp-content/uploads/2015/01/butt-kicks-exercise-illustration-spotebi.gif",
+            "Pike Push-ups": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/pikepushup-1456956895.gif?crop=1xw:1xh;center,top&resize=1200:*",
         },
     }
     try:
@@ -113,7 +127,7 @@ st.markdown("""
     z-index: 999;
     background-color: #fff;
     border-bottom: 2px solid #ddd;
-    padding: 8px 10px;
+    padding: 2px 4px;
 }
 
 /* Default styles for larger screens (compact layout) */
@@ -204,6 +218,11 @@ section.main > div:first-child {
     box-shadow: none !important;
 }
 
+/* Small thumbnails in setup view */
+img {
+    border-radius: 6px;
+}
+
 
 
 </style>
@@ -232,12 +251,30 @@ def show_setup_screen():
     c1, c2 = st.columns([2,1])
     with c1:
         keys = list(st.session_state.config["exercise_sequences"].keys())
-        sel = st.selectbox("Choose a sequence:", keys, index=keys.index(st.session_state.selected_sequence) if st.session_state.selected_sequence in keys else 0)
+        sel = st.selectbox("Choose a sequence:", keys, index=keys.index(st.session_state.selected_sequence))
         st.session_state.selected_sequence = sel
         exercises = st.session_state.config["exercise_sequences"][sel]
-        st.markdown("**Exercises:**")
-        for i, ex in enumerate(exercises, 1):
-            st.write(f"{i}. {ex}")
+        images = st.session_state.config["exercise_images"]
+
+        # Visual layout for thumbnails
+        st.markdown("### Exercises Preview")
+        cols = st.columns(len(exercises))
+
+        for i, ex in enumerate(exercises):
+            img_url = images.get(ex)
+            with cols[i]:
+                if img_url:
+                    st.markdown(
+                        f"""
+                        <div style="text-align:center">
+                            <img src="{img_url}" style="width:100%; border-radius:8px; max-height:100px; object-fit:cover;"/>
+                            <div style="font-size:12px; margin-top:4px;">{ex}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.markdown(f"<div style='text-align:center; font-size:12px;'>{ex}</div>", unsafe_allow_html=True)
         st.markdown("---")
         st.info("Pyramid: 1 → 1-2 → 1-2-3 → 1-2-3-4 → 1-2-3-4-5 → 5-4-3-2 → 5-4-3 → 5-4 → 5")
 
