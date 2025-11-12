@@ -1,0 +1,31 @@
+# --- Python build and cache files ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+
+# --- Streamlit & local app data ---
+hiit_config.json
+.streamlit/
+.cache/
+.history/
+
+# --- Virtual environments ---
+venv/
+env/
+.venv/
+
+# --- System / Editor files ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# --- Logs / temporary ---
+*.log
+*.tmp
