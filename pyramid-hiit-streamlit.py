@@ -191,6 +191,21 @@ st.markdown("""
 .round-completed { color: #9ca3af; opacity: 0.5; }
 .round-current   { background-color: #10b981; color: white; font-weight: bold; }
 .round-upcoming  { color: #6b7280; }
+            
+
+/* Remove Streamlit’s default top divider / padding */
+section.main > div:first-child {
+    border-top: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+[data-testid="stAppViewBlockContainer"] {
+    border-top: none !important;
+    box-shadow: none !important;
+}
+
+
+
 </style>
 """, unsafe_allow_html=True)
 
