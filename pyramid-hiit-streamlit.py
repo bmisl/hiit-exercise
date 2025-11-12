@@ -116,9 +116,9 @@ if "elapsed_time_seconds" not in st.session_state:
 # ---------------------------
 st.markdown("""
 <style>
-/* Sidebar Transparency (50%) */
+/* Sidebar Transparency (40%) */
 [data-testid="stSidebar"] {
-    background-color: rgba(240, 242, 246, 0.5); 
+    background-color: rgba(240, 242, 246, 0.4); 
 }
 
 .top-timer {
@@ -280,10 +280,10 @@ def show_setup_screen():
 
     with c2:
         cfg = st.session_state.config
-        cfg["work_time"] = st.number_input("Work (s)", 1, 120, cfg["work_time"])
+        cfg["work_time"] = st.number_input("Work (s)", 15, 120, cfg["work_time"])
         cfg["rest_between_exercises"] = st.number_input("Rest Between Exercises (s)", 5, 60, cfg["rest_between_exercises"])
-        cfg["rest_between_rounds"] = st.number_input("Rest Between Rounds (s)", 1, 120, cfg["rest_between_rounds"])
-        cfg["peak_rest"] = st.number_input("Peak Rest (s)", 3, 180, cfg["peak_rest"])
+        cfg["rest_between_rounds"] = st.number_input("Rest Between Rounds (s)", 10, 120, cfg["rest_between_rounds"])
+        cfg["peak_rest"] = st.number_input("Peak Rest (s)", 30, 180, cfg["peak_rest"])
 
     st.markdown("---")
     
