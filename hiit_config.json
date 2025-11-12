@@ -1,7 +1,7 @@
 {
-  "work_time": 20,
-  "rest_between_exercises": 10,
-  "rest_between_rounds": 20,
+  "work_time": 10,
+  "rest_between_exercises": 5,
+  "rest_between_rounds": 10,
   "peak_rest": 30,
   "exercise_sequences": {
     "Classic HIIT": [

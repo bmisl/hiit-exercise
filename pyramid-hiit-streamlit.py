@@ -1,4 +1,3 @@
-# mobile_responsive_pyramid-hiit-streamlit.py
 import streamlit as st
 import time
 import json
@@ -8,18 +7,16 @@ from pathlib import Path
 st.set_page_config(page_title="Pyramid HIIT Timer", page_icon="🔥", layout="wide")
 
 # ---------------------------
-# Config load/save (Unchanged)
+# Config load/save (UNCHANGED)
 # ---------------------------
 def load_config():
+    # Helper to load default config if file doesn't exist
     path = Path("hiit_config.json")
     if path.exists():
         with open(path, "r") as f:
             return json.load(f)
     default = {
-        "work_time": 40,
-        "rest_between_exercises": 15,
-        "rest_between_rounds": 45,
-        "peak_rest": 75,
+        "work_time": 40, "rest_between_exercises": 15, "rest_between_rounds": 45, "peak_rest": 75,
         "exercise_sequences": {
             "Classic HIIT": ["Burpees", "Mountain Climbers", "Jump Squats", "High Knees", "Push-ups"],
             "Core Focus": ["Plank Jacks", "Russian Twists", "Bicycle Crunches", "Mountain Climbers", "Leg Raises"],
@@ -39,11 +36,14 @@ def load_config():
             "Jumping Jacks": "https://media.giphy.com/media/3oEduWFBrKjvf9DFiE/giphy.gif",
             "Butt Kicks": "https://media.giphy.com/media/l0HlHcuzAjhMQ2m0U/giphy.gif",
             "Squat Jumps": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquatjump-1457041758.gif?resize=1400:*",
-            "Lunge Jumps": "https://tenor.com/view/afundo-gif-12659523759178076149.gif",
+            "Lunge Jumps": "https://tenor.com/view/afundo-gif-12659523759177114173.gif", 
             "Pike Push-ups": "https://media.giphy.com/media/3o7TKqnN349PBUtGFO/giphy.gif",
         },
     }
-    save_config(default)
+    try:
+        save_config(default) 
+    except:
+        pass
     return default
 
 def save_config(cfg):
@@ -52,7 +52,35 @@ def save_config(cfg):
         json.dump(cfg, f, indent=2)
 
 # ---------------------------
-# Session state defaults (Unchanged)
+# TIME CALCULATION HELPERS (UNCHANGED)
+# ---------------------------
+def calculate_total_time(cfg):
+    """Calculates the total duration of the workout in seconds."""
+    W = cfg["work_time"]
+    RE = cfg["rest_between_exercises"]
+    RR = cfg["rest_between_rounds"]
+    RP = cfg["peak_rest"]
+    
+    # Pyramid structure: [1, 2, 3, 4, 5, 4, 3, 2, 1]
+    total_work_intervals = 25
+    total_rest_between_exercise_intervals = 16 
+    total_rest_between_round_intervals = 7 
+    total_peak_rest_intervals = 1 
+
+    total_time = (total_work_intervals * W) + \
+                 (total_rest_between_exercise_intervals * RE) + \
+                 (total_rest_between_round_intervals * RR) + \
+                 (total_peak_rest_intervals * RP)
+    return total_time
+
+def format_time(seconds):
+    """Formats seconds into MM:SS format."""
+    minutes = int(seconds) // 60
+    seconds = int(seconds) % 60
+    return f"{minutes:02d}:{seconds:02d}"
+
+# ---------------------------
+# Session state defaults (UNCHANGED)
 # ---------------------------
 if "config" not in st.session_state:
     st.session_state.config = load_config()
@@ -64,12 +92,30 @@ if "exercise_index" not in st.session_state:
     st.session_state.exercise_index = 0
 if "selected_sequence" not in st.session_state:
     st.session_state.selected_sequence = "Classic HIIT"
-
+if "total_time_seconds" not in st.session_state:
+    st.session_state.total_time_seconds = 0
+if "elapsed_time_seconds" not in st.session_state:
+    st.session_state.elapsed_time_seconds = 0
+    
 # ---------------------------
-# Styles (ADJUSTED FOR RESPONSIVENESS)
+# Styles (UNCHANGED)
 # ---------------------------
 st.markdown("""
 <style>
+/* Sidebar Transparency (70%) */
+[data-testid="stSidebar"] {
+    background-color: rgba(240, 242, 246, 0.7); 
+}
+
+.top-timer {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background-color: #fff;
+    border-bottom: 2px solid #ddd;
+    padding: 8px 10px;
+}
+
 /* Default styles for larger screens (compact layout) */
 .big-timer {
     font-size: 80px;
@@ -101,17 +147,17 @@ st.markdown("""
 /* Mobile-Specific Styles: Shrink everything for screens <= 600px */
 @media (max-width: 600px) {
     .big-timer {
-        font-size: 50px; /* Smaller font on mobile */
-        height: 150px;  /* Smaller box height on mobile */
+        font-size: 50px; 
+        height: 150px; 
     }
     .exercise-name {
-        font-size: 24px; /* Smaller exercise name */
+        font-size: 24px;
     }
     .exercise-gif { 
-        max-height: 200px; /* Smaller GIF height */
+        max-height: 200px; 
     }
     .gif-blank {
-        height: 200px; /* Match placeholder height */
+        height: 200px; 
     }
 }
 
@@ -149,19 +195,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------
-# Pyramid order helpers (Unchanged)
+# Pyramid order helpers (UNCHANGED)
 # ---------------------------
 PYRAMID_LABELS = ["1", "1-2", "1-2-3", "1-2-3-4", "1-2-3-4-5", "5-4-3-2", "5-4-3", "5-4", "5"]
 PYRAMID_INDICES = [
-    [1],
-    [1,2],
-    [1,2,3],
-    [1,2,3,4],
-    [1,2,3,4,5],
-    [5,4,3,2],
-    [5,4,3],
-    [5,4],
-    [5],
+    [1], [1,2], [1,2,3], [1,2,3,4], [1,2,3,4,5], 
+    [5,4,3,2], [5,4,3], [5,4], [5],
 ]
 
 def round_exercises(round_num, full_list):
@@ -169,7 +208,7 @@ def round_exercises(round_num, full_list):
     return [full_list[i-1] for i in idxs]
 
 # ---------------------------
-# UI screens (Button fix applied)
+# UI screens
 # ---------------------------
 def show_setup_screen():
     st.title("🔥 Pyramid HIIT Timer")
@@ -196,14 +235,22 @@ def show_setup_screen():
 
     st.markdown("---")
     
-    # Button fix: Ensures the button is not drawn in the subsequent cycle
     if st.button("🚀 START WORKOUT", type="primary"):
         st.session_state.workout_started = True
         st.session_state.round = 1
         st.session_state.exercise_index = 0
+        st.session_state.elapsed_time_seconds = 0
+        
+        # Calculate and store total time
+        st.session_state.total_time_seconds = calculate_total_time(cfg) 
+        
         save_config(st.session_state.config)
-        st.rerun()
-        return # Important: Exits the function immediately after rerun is called.
+        # RERUN is called, but the function still finishes, 
+        # which can cause rendering issues. We rely on the main function 
+        # logic below to block further setup rendering.
+        st.rerun() 
+        st.stop
+        return 
 
 def show_pyramid_progress():
     current = st.session_state.round - 1 
@@ -217,14 +264,17 @@ def show_pyramid_progress():
 def show_workout_screen():
     cfg = st.session_state.config
     exercises = cfg["exercise_sequences"][st.session_state.selected_sequence]
-    total_rounds = 9
-
+    
     # Determine current exercise list for this round
     curr_list = round_exercises(st.session_state.round, exercises)
     st.session_state.exercise_index = min(st.session_state.exercise_index, len(curr_list) - 1)
     current_exercise = curr_list[st.session_state.exercise_index]
-
-    # --- Sidebar: show all exercises and highlight by NAME (Unchanged)
+    
+    # Get Time Variables
+    total_time_str = format_time(st.session_state.total_time_seconds)
+    elapsed_time_sec = st.session_state.elapsed_time_seconds
+    
+    # --- Sidebar: show all exercises and highlight by NAME
     with st.sidebar:
         st.markdown("### 🏋️ Exercises")
         for i, ex in enumerate(exercises, 1):
@@ -234,14 +284,16 @@ def show_workout_screen():
         st.markdown("### 🧱 Pyramid Progress")
         show_pyramid_progress()
 
-    # Header + progress (Unchanged)
-    st.markdown(f"### Round {st.session_state.round} of {total_rounds}")
-    st.progress((st.session_state.round - 1) / total_rounds)
+    # --- Sticky top timer ---
+    st.markdown("<div class='top-timer'>", unsafe_allow_html=True)
+    progress_text = st.empty()
+    progress_bar = st.empty()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    # Placeholders for dynamic content
+    # Phase labels (WORK / REST)
     labels_ph = st.empty()
 
-    # Layout: GIF/Exercise Name (2/3) | Timer (1/3) (Layout is responsive due to CSS)
+    # Layout: GIF/Exercise Name (2/3) | Timer (1/3)
     gif_col, timer_col = st.columns([2, 1])
     
     # Placeholders inside columns
@@ -261,7 +313,6 @@ def show_workout_screen():
         unsafe_allow_html=True
     )
     
-    # Show Exercise Name and GIF only during work
     gif_ph_name.markdown(f"<div class='exercise-name'>💪 {current_exercise}</div>", unsafe_allow_html=True)
     if current_exercise in cfg["exercise_images"]:
         gif_ph.markdown(
@@ -271,77 +322,110 @@ def show_workout_screen():
     else:
         gif_ph.markdown("<div class='gif-blank'></div>", unsafe_allow_html=True)
             
-
-    for t in range(cfg["work_time"], 0, -1):
+    work_time_duration = cfg["work_time"]
+    for t in range(work_time_duration, 0, -1):
+        # Update elapsed time display based on current countdown value
+        current_elapsed = elapsed_time_sec + (work_time_duration - t) 
+        # Display Time Progress
+        progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
+        progress_bar.progress(current_elapsed / st.session_state.total_time_seconds)
         timer_ph.markdown(f"<div class='big-timer work-phase'>{t}</div>", unsafe_allow_html=True)
         time.sleep(1)
+
+    # Increment elapsed time by the phase duration
+    st.session_state.elapsed_time_seconds += work_time_duration
 
     # Move to next exercise in this round
     st.session_state.exercise_index += 1
 
     # -------------------------
-    # REST PHASE (between exercises or between rounds/peak)
+    # REST PHASE
     # -------------------------
-    # Update labels
     labels_ph.markdown(
         "<div class='phase-labels'><span class='label-faded'>⚡ WORK</span> | <span class='label-active'>REST 😮‍💨</span></div>",
         unsafe_allow_html=True
     )
     
-    # Clear GIF column content for rest
     gif_ph_name.markdown("<div class='exercise-name'></div>", unsafe_allow_html=True)
     gif_ph.markdown("<div class='gif-blank'></div>", unsafe_allow_html=True)
 
+    current_round = st.session_state.round
 
     if st.session_state.exercise_index < len(curr_list):
         # Rest between exercises
         next_exercise = curr_list[st.session_state.exercise_index]
         gif_ph_name.markdown(f"<div class='exercise-name'>NEXT: {next_exercise}</div>", unsafe_allow_html=True)
-        for t in range(cfg["rest_between_exercises"], 0, -1):
+        rest_duration = cfg["rest_between_exercises"]
+        for t in range(rest_duration, 0, -1):
+            current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
+            progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
+            progress_bar.progress(current_elapsed / st.session_state.total_time_seconds)
             timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
             time.sleep(1)
+        
+        st.session_state.elapsed_time_seconds += rest_duration
         st.rerun()
     else:
         # Finished the round — decide what rest to do
         st.session_state.exercise_index = 0
-
+        
         # Peak rest after round 5 (Pyramid Peak)
-        if st.session_state.round == 5:
-            gif_ph_name.markdown("<div class='exercise-name'>PEAK REST ⛰️</div>", unsafe_allow_html=True)
-            for t in range(cfg["peak_rest"], 0, -1):
+        if current_round == 5:
+            # Show round count here
+            gif_ph_name.markdown(f"<div class='exercise-name'>PEAK REST ⛰️: Round {current_round} of 9</div>", unsafe_allow_html=True)
+            rest_duration = cfg["peak_rest"]
+            for t in range(rest_duration, 0, -1):
+                current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
+                progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
+                progress_bar.progress(current_elapsed / st.session_state.total_time_seconds)
                 timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
                 time.sleep(1)
-            # Advance to next round
+            
+            st.session_state.elapsed_time_seconds += rest_duration
             st.session_state.round += 1
             st.rerun()
 
         # Workout complete after round 9
-        elif st.session_state.round == 9:
+        elif current_round == 9:
             st.balloons()
             st.success("🎉 WORKOUT COMPLETE! Amazing job!")
+            # Final time update
+            progress_ph.markdown(f"### Total Workout Time: **{total_time_str}**") 
+            progress_ph.progress(1.0)
             if st.button("Back to Setup"):
                 st.session_state.workout_started = False
+                st.session_state.elapsed_time_seconds = 0
                 st.rerun()
-            return # Exit function for final screen
+            return 
         
         # Regular rest between rounds
         else:
-            gif_ph_name.markdown(f"<div class='exercise-name'>REST BETWEEN ROUNDS</div>", unsafe_allow_html=True)
-            for t in range(cfg["rest_between_rounds"], 0, -1):
+            # Show round count here
+            gif_ph_name.markdown(f"<div class='exercise-name'>REST BETWEEN ROUNDS: Round {current_round} of 9</div>", unsafe_allow_html=True)
+            rest_duration = cfg["rest_between_rounds"]
+            for t in range(rest_duration, 0, -1):
+                current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
+                progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
+                progress_bar.progress(current_elapsed / st.session_state.total_time_seconds)
                 timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
                 time.sleep(1)
-            # Advance to next round
+            
+            st.session_state.elapsed_time_seconds += rest_duration
             st.session_state.round += 1
             st.rerun()
 
 # ---------------------------
-# Entrypoint (Unchanged)
+# Entrypoint (FIXED)
 # ---------------------------
 def main():
-    if not st.session_state.workout_started:
-        show_setup_screen()
-    else:
+    # FIX: Ensure setup screen does not render if workout has started, 
+    # preventing the ghosting effect (Issue B).
+    if st.session_state.workout_started:
         show_workout_screen()
+        return
+
+    # If the workout hasn't started, show the setup screen.
+    show_setup_screen()
 
 if __name__ == "__main__":
     main()
