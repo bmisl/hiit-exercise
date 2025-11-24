@@ -16,7 +16,7 @@ def load_config():
         with open(path, "r") as f:
             return json.load(f)
     default = {
-        "work_time": 40, "rest_between_exercises": 15, "rest_between_rounds": 45, "peak_rest": 75,
+        "work_time": 30, "rest_between_exercises": 45, "rest_between_rounds": 60, "peak_rest": 75,
         "exercise_sequences": {
             "Classic HIIT": ["Burpees", "Mountain Climbers", "Jump Squats", "High Knees", "Push-ups"],
             "Core Focus": ["Plank Jacks", "Russian Twists", "Bicycle Crunches", "Mountain Climbers", "Leg Raises"],
@@ -280,10 +280,10 @@ def show_setup_screen():
 
     with c2:
         cfg = st.session_state.config
-        cfg["work_time"] = st.number_input("Work (s)", 15, 120, cfg["work_time"])
-        cfg["rest_between_exercises"] = st.number_input("Rest Between Exercises (s)", 5, 60, cfg["rest_between_exercises"])
-        cfg["rest_between_rounds"] = st.number_input("Rest Between Rounds (s)", 10, 120, cfg["rest_between_rounds"])
-        cfg["peak_rest"] = st.number_input("Peak Rest (s)", 30, 180, cfg["peak_rest"])
+        cfg["work_time"] = st.number_input("Work (s)", 15, 120, cfg["work_time"], step=5)
+        cfg["rest_between_exercises"] = st.number_input("Rest Between Exercises (s)", 5, 60, cfg["rest_between_exercises"], step=5)
+        cfg["rest_between_rounds"] = st.number_input("Rest Between Rounds (s)", 10, 120, cfg["rest_between_rounds"], step=5)
+        cfg["peak_rest"] = st.number_input("Peak Rest (s)", 30, 180, cfg["peak_rest"], step=5)
 
     st.markdown("---")
     
