@@ -1,7 +1,19 @@
 import streamlit as st
 import time
 import json
+import random
 from pathlib import Path
+
+STRETCHING_GIFS = [
+    "https://hips.hearstapps.com/hmg-prod/images/child-s-pose-1575475463.gif",
+    "https://hips.hearstapps.com/menshealth-uk/main/assets/lunge22.gif",
+    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-tri.gif",
+    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-shoul.gif",
+    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-quad.gif",
+    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-hip.gif",
+    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-ham.gif",
+    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-glu.gif"
+]
 
 # Use 'wide' layout for desktop, let CSS handle mobile
 st.set_page_config(page_title="Pyramid HIIT Timer", page_icon="🔥", layout="wide")
@@ -84,7 +96,7 @@ def calculate_total_time(cfg):
     total_time = (total_work_intervals * W) + \
                  (total_rest_between_exercise_intervals * RE) + \
                  (total_rest_between_round_intervals * RR) + \
-                 (total_peak_rest_intervals * RP)
+                 (total_peak_rest_intervals * RP) + 10 # 10s initial countdown
     return total_time
 
 def format_time(seconds):
@@ -354,6 +366,28 @@ def show_workout_screen():
     current_round = st.session_state.round
 
     # -------------------------
+    # INITIAL PREPARATION (10s)
+    # -------------------------
+    if st.session_state.elapsed_time_seconds == 0:
+        labels_ph.markdown(
+            "<div class='phase-labels'><span class='label-active'>🚀 PREPARE</span></div>",
+            unsafe_allow_html=True,
+        )
+        gif_ph_name.markdown(f"<div class='exercise-name'>GET READY!</div>", unsafe_allow_html=True)
+        img_url = cfg["exercise_images"].get(current_exercise)
+        if img_url:
+            gif_ph.markdown(f"<img src='{img_url}' class='exercise-gif'/>", unsafe_allow_html=True)
+        
+        for t in range(10, 0, -1):
+            elapsed = 10 - t
+            progress_text.markdown(f"### ⏱ {format_time(elapsed)} / {total_time_str}")
+            progress_val = min(1.0, elapsed / st.session_state.total_time_seconds)
+            progress_bar.progress(progress_val)
+            timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
+            time.sleep(1)
+        st.session_state.elapsed_time_seconds = 10
+
+    # -------------------------
     # WORK PHASE
     # -------------------------
     labels_ph.markdown(
@@ -371,7 +405,7 @@ def show_workout_screen():
 
     work_time = cfg["work_time"]
     for t in range(work_time, 0, -1):
-        current_elapsed = elapsed_time_sec + (work_time - t)
+        current_elapsed = st.session_state.elapsed_time_seconds + (work_time - t)
         progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
         progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
         progress_bar.progress(progress_value)
@@ -398,6 +432,10 @@ def show_workout_screen():
         rest_duration = cfg["rest_between_exercises"]
 
         for t in range(rest_duration, 0, -1):
+            # Show/Change stretching GIF every 15 seconds
+            if t == rest_duration or t % 15 == 0:
+                gif_ph.markdown(f"<img src='{random.choice(STRETCHING_GIFS)}' class='exercise-gif'/>", unsafe_allow_html=True)
+
             current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
             progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
             progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
@@ -445,6 +483,10 @@ def show_workout_screen():
 
     # Run the appropriate rest timer (peak or regular)
     for t in range(rest_duration, 0, -1):
+        # Show/Change stretching GIF every 15 seconds
+        if t == rest_duration or t % 15 == 0:
+            gif_ph.markdown(f"<img src='{random.choice(STRETCHING_GIFS)}' class='exercise-gif'/>", unsafe_allow_html=True)
+
         current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
         progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
         progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
