@@ -29,3 +29,8 @@ Thumbs.db
 # --- Logs / temporary ---
 *.log
 *.tmp
+
+# --- Data folders ---
+exercises/
+stretches/
+
