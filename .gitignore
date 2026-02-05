@@ -9,7 +9,7 @@ dist/
 build/
 
 # --- Streamlit & local app data ---
-hiit_config.json
+
 .streamlit/
 .cache/
 .history/
