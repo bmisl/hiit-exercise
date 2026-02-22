@@ -25,121 +25,141 @@ def init_hiit_session():
         st.session_state.elapsed_time_seconds = 0
     
 # ---------------------------
-# Styles (UNCHANGED)
+# Styles
 # ---------------------------
-st.markdown("""
-<style>
-/* Sidebar Transparency (40%) */
-[data-testid="stSidebar"] {
-    background-color: rgba(240, 242, 246, 0.4); 
-}
+def inject_hiit_css():
+    st.markdown("""
+    <style>
+    /* Sidebar Transparency (40%) */
+    [data-testid="stSidebar"] {
+        background-color: rgba(240, 242, 246, 0.4); 
+    }
 
-.top-timer {
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    background-color: #fff;
-    border-bottom: 2px solid #ddd;
-    padding: 2px 4px;
-}
+    .top-timer {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        background-color: #fff;
+        border-bottom: 2px solid #ddd;
+        padding: 2px 4px;
+    }
 
-/* Default styles for larger screens (compact layout) */
-.big-timer {
-    font-size: 80px;
-    font-weight: bold;
-    text-align: center;
-    padding: 20px; 
-    border-radius: 15px;
-    margin: 10px 0;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.exercise-name {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 5px;
-}
-.exercise-gif { 
-    max-width: 100%;
-    max-height: 350px; 
-    object-fit: contain; 
-    margin: auto;
-    display: block;
-}
-.gif-blank    { height: 350px; }
-
-/* Mobile-Specific Styles: Shrink everything for screens <= 600px */
-@media (max-width: 600px) {
+    /* Default styles for larger screens (compact layout) */
     .big-timer {
-        font-size: 50px; 
-        height: 150px; 
+        font-size: 80px;
+        font-weight: bold;
+        text-align: center;
+        padding: 20px; 
+        border-radius: 15px;
+        margin: 10px 0;
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .exercise-name {
-        font-size: 24px;
+        font-size: 36px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 5px;
     }
-    .exercise-gif { 
-        max-height: 200px; 
+    /* Standardize image height in workout screen */
+    [data-testid="stColumn"]:nth-of-type(1) img {
+        max-height: 400px !important;
+        width: auto !important;
+        object-fit: contain !important;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
     }
-    .gif-blank {
-        height: 200px; 
+    .gif-blank { height: 400px; }
+
+    /* Mobile-Specific Styles: Shrink everything for screens <= 600px */
+    @media (max-width: 600px) {
+        .big-timer {
+            font-size: 50px; 
+            height: 150px; 
+        }
+        .exercise-name {
+            font-size: 24px;
+        }
+        .exercise-gif { 
+            max-height: 200px; 
+        }
+        .gif-blank {
+            height: 200px; 
+        }
     }
-}
 
-/* Color and general styles (Unchanged) */
-.work-phase {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-}
-.rest-phase {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-}
-.phase-labels {
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    margin: 5px 0 15px 0;
-}
-.label-active { opacity: 1;   transition: opacity 0.4s ease; }
-.label-faded  { opacity: 0.2; transition: opacity 0.4s ease; }
+    /* Color and general styles */
+    .work-phase {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+    .rest-phase {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+    .phase-labels {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 5px 0 15px 0;
+    }
+    .label-active { opacity: 1;   transition: opacity 0.4s ease; }
+    .label-faded  { opacity: 0.2; transition: opacity 0.4s ease; }
 
-.pyramid-progress {
-    text-align: center;
-    font-size: 11px;
-    margin-top: 15px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-}
-.round-item { display: inline-block; margin: 0 5px; padding: 4px 6px; border-radius: 4px; }
-.round-completed { color: #9ca3af; opacity: 0.5; }
-.round-current   { background-color: #10b981; color: white; font-weight: bold; }
-.round-upcoming  { color: #6b7280; }
-            
+    .pyramid-progress {
+        text-align: center;
+        font-size: 11px;
+        margin-top: 5px;
+        padding: 8px;
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+    }
+    .round-item { 
+        padding: 4px 6px; 
+        border-radius: 4px;
+        min-width: 25px;
+        text-align: center;
+    }
+    .round-completed { 
+        background-color: #e5e7eb;
+        color: #9ca3af;
+    }
+    .round-current   { 
+        background-color: #10b981; 
+        color: white; 
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+    }
+    .round-upcoming  { 
+        background-color: #f3f4f6;
+        color: #6b7280; 
+    }
+                
+    /* Remove Streamlit’s default top divider / padding */
+    section.main > div:first-child {
+        border-top: none !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    [data-testid="stAppViewBlockContainer"] {
+        border-top: none !important;
+        box-shadow: none !important;
+    }
 
-/* Remove Streamlit’s default top divider / padding */
-section.main > div:first-child {
-    border-top: none !important;
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-[data-testid="stAppViewBlockContainer"] {
-    border-top: none !important;
-    box-shadow: none !important;
-}
-
-/* Small thumbnails in setup view */
-img {
-    border-radius: 6px;
-}
-
-
-
-</style>
-""", unsafe_allow_html=True)
+    /* Small thumbnails in setup view */
+    img {
+        border-radius: 6px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # ---------------------------
 # Pyramid order helpers (UNCHANGED)
@@ -158,6 +178,7 @@ def round_exercises(round_num, full_list):
 # UI screens
 # ---------------------------
 def show_setup_screen():
+    inject_hiit_css()
     st.title("🔥 Pyramid HIIT Timer")
     st.markdown("### Configure Your Workout")
 
@@ -177,17 +198,8 @@ def show_setup_screen():
             img_url = images.get(ex)
             with cols[i]:
                 if img_url:
-                    st.markdown(
-                        f"""
-                        <div style="text-align:center">
-                            <img src="{img_url}" style="width:100%; border-radius:8px; max-height:100px; object-fit:cover;"/>
-                            <div style="font-size:12px; margin-top:4px;">{ex}</div>
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                else:
-                    st.markdown(f"<div style='text-align:center; font-size:12px;'>{ex}</div>", unsafe_allow_html=True)
+                    st.image(img_url, use_container_width=True)
+                st.markdown(f"<div style='text-align:center; font-size:12px;'>{ex}</div>", unsafe_allow_html=True)
         st.markdown("---")
         st.info("Pyramid: 1 → 1-2 → 1-2-3 → 1-2-3-4 → 1-2-3-4-5 → 5-4-3-2 → 5-4-3 → 5-4 → 5")
 
@@ -227,6 +239,7 @@ def show_pyramid_progress():
     st.markdown(html, unsafe_allow_html=True)
 
 def show_workout_screen():
+    inject_hiit_css()
     cfg = st.session_state.config
     exercises = cfg["exercise_sequences"][st.session_state.selected_sequence]
 
@@ -277,7 +290,7 @@ def show_workout_screen():
         gif_ph_name.markdown(f"<div class='exercise-name'>GET READY!</div>", unsafe_allow_html=True)
         img_url = cfg["exercise_images"].get(current_exercise)
         if img_url:
-            gif_ph.markdown(f"<img src='{img_url}' class='exercise-gif'/>", unsafe_allow_html=True)
+            gif_ph.image(img_url, use_container_width=True)
         
         for t in range(10, 0, -1):
             elapsed = 10 - t
@@ -300,7 +313,7 @@ def show_workout_screen():
 
     img_url = cfg["exercise_images"].get(current_exercise)
     if img_url:
-        gif_ph.markdown(f"<img src='{img_url}' class='exercise-gif'/>", unsafe_allow_html=True)
+        gif_ph.image(img_url, use_container_width=True)
     else:
         gif_ph.markdown("<div class='gif-blank'></div>", unsafe_allow_html=True)
 
@@ -335,7 +348,7 @@ def show_workout_screen():
         for t in range(rest_duration, 0, -1):
             # Show/Change stretching GIF every 15 seconds
             if t == rest_duration or t % 15 == 0:
-                gif_ph.markdown(f"<img src='{random.choice(STRETCHING_GIFS)}' class='exercise-gif'/>", unsafe_allow_html=True)
+                gif_ph.image(random.choice(STRETCHING_GIFS), use_container_width=True)
 
             current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
             progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
@@ -386,7 +399,7 @@ def show_workout_screen():
     for t in range(rest_duration, 0, -1):
         # Show/Change stretching GIF every 15 seconds
         if t == rest_duration or t % 15 == 0:
-            gif_ph.markdown(f"<img src='{random.choice(STRETCHING_GIFS)}' class='exercise-gif'/>", unsafe_allow_html=True)
+            gif_ph.image(random.choice(STRETCHING_GIFS), use_container_width=True)
 
         current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
         progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")

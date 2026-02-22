@@ -44,9 +44,48 @@ def show_strength_screen(sequence_key):
             return "complete"
         return
 
-    current_ex = exercises[st.session_state.strength_exercise_index]
+    raw_ex = exercises[st.session_state.strength_exercise_index]
+    
+    # Handle list-based choice logic
+    if isinstance(raw_ex, list):
+        options = raw_ex
+        choice_key = f"choice_{st.session_state.strength_exercise_index}"
+        if choice_key not in st.session_state or st.session_state[choice_key] not in options:
+            st.session_state[choice_key] = options[0]
+            
+        st.subheader("Select Variation")
+        current_ex = st.selectbox(
+            "Choose your movement:",
+            options,
+            index=options.index(st.session_state[choice_key]),
+            key=f"select_{st.session_state.strength_exercise_index}"
+        )
+        st.session_state[choice_key] = current_ex
+    else:
+        current_ex = raw_ex
+
+    # Update Sidebar with selection info if applicable
+    with st.sidebar:
+        if isinstance(raw_ex, list):
+            st.info(f"Selected: {current_ex}")
+
     metadata = cfg.get("strength_metadata", {}).get(current_ex, {})
     img_url = cfg["exercise_images"].get(current_ex)
+
+    # Helper for advancing set logic
+    target_sets_str = metadata.get('sets', "3").split("-")[-1] 
+    try:
+        target_sets = int(target_sets_str)
+    except:
+        target_sets = 3
+
+    def advance_set():
+        st.session_state.strength_set_index += 1
+        if st.session_state.strength_set_index >= target_sets:
+            st.session_state.strength_exercise_index += 1
+            st.session_state.strength_set_index = 0
+            st.toast(f"Exercise {current_ex} complete!")
+        st.rerun()
 
     st.header(f"{current_ex}")
     
@@ -54,7 +93,41 @@ def show_strength_screen(sequence_key):
     
     with col1:
         if img_url:
+            # Enforce image height and button overlay via direct CSS
+            st.markdown(
+                """
+                <style>
+                /* Target the image in the first main-area column */
+                [data-testid="stColumn"]:nth-of-type(1) img {
+                    max-height: 400px !important;
+                    width: auto !important;
+                    object-fit: contain !important;
+                    margin-left: auto;
+                    margin-right: auto;
+                    display: block;
+                }
+                /* Target the button in the same column and make it an invisible overlay */
+                [data-testid="stColumn"]:nth-of-type(1) button {
+                    position: absolute !important;
+                    height: 400px !important;
+                    width: 100% !important;
+                    opacity: 0 !important;
+                    z-index: 1000 !important;
+                    border: none !important;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                }
+                </style>
+                """, unsafe_allow_html=True
+            )
+            
+            # The button renders first in the DOM, becoming an overlay for what follows
+            if st.button("Complete Set", key="clickable_img_overlay", use_container_width=True):
+                advance_set()
+                
             st.image(img_url, use_container_width=True)
+            st.caption("Tip: You can tap the image to complete a set!")
         else:
             st.info("No image available for this exercise.")
             
@@ -64,23 +137,11 @@ def show_strength_screen(sequence_key):
 
         st.divider()
 
-        # Set tracking (moved up)
-        target_sets_str = metadata.get('sets', "3").split("-")[-1] # take max sets
-        try:
-            target_sets = int(target_sets_str)
-        except:
-            target_sets = 3
-            
+        # Set tracking
         current_set = st.session_state.strength_set_index + 1
         st.markdown(f"### Set {current_set} of {target_sets}")
         
-        if st.button("✅ SET COMPLETE", type="primary", use_container_width=True):
-            st.session_state.strength_set_index += 1
-            if st.session_state.strength_set_index >= target_sets:
-                st.session_state.strength_exercise_index += 1
-                st.session_state.strength_set_index = 0
-                st.toast(f"Exercise {current_ex} complete!")
-            st.rerun()
+        # No visible button here either
 
         st.divider()
 

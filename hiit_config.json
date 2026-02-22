@@ -39,27 +39,34 @@
       "Sit-up",
       "Mountain Climber"
     ],
-    "Leg Day (Ai)": [
+    "Leg Day": [
       "Goblet Squat",
       "Romanian Deadlift",
       "Bulgarian Split Squat",
       "Calf Raises",
       "Hanging Leg Raise"
     ],
-    "Full Body (Aii)": [
-      "DB Squat",
+    "Full Body": [
+      [
+        "DB Squat",
+        "Goblet Squat",
+        "Romanian Deadlift"
+      ],
       "Dumbbell Bench Press",
       "One-Arm Dumbbell Row",
       "Overhead Press",
       "Pull-Ups"
     ],
-    "Upper Body (Aiii)": [
+    "Upper Body": [
       "Incline Dumbbell Press",
       "Chest-Supported Row",
       "Light Overhead Press",
       "Lateral Raises",
       "Arms Curls",
-      "Arms Dips"
+      [
+        "Overhead Triceps Extensions",
+        "Triceps Dips"
+      ]
     ]
   },
   "strength_metadata": {
@@ -91,7 +98,22 @@
     "DB Squat": {
       "sets": "4",
       "reps": "5-8",
-      "cues": "Cycle 1: Squat focus; Cycle 2: Deadlift focus (if chose RDL); Heavier than leg day."
+      "cues": "Hold dumbbells at sides or shoulders; Feet shoulder-width; Sit down between hips; Knees track over toes; Keep torso tall; Heavier than leg day."
+    },
+    "Arms Curls": {
+      "sets": "2-3 each",
+      "reps": "10-15",
+      "cues": "DB curls; Focus on mind-muscle connection"
+    },
+    "Triceps Dips": {
+      "sets": "2-3 each",
+      "reps": "10-15",
+      "cues": "Triceps Dips; Focus on mind-muscle connection"
+    },
+    "Overhead Triceps Extensions": {
+      "sets": "2-3 each",
+      "reps": "10-15",
+      "cues": "Overhead Triceps Extensions; Focus on mind-muscle connection"
     },
     "Dumbbell Bench Press": {
       "sets": "3-4",
@@ -132,19 +154,9 @@
       "sets": "3",
       "reps": "12-20",
       "cues": "Light weight, strict form; Up to shoulder height; Control the descent"
-    },
-    "Arms Curls": {
-      "sets": "2-3 each",
-      "reps": "10-15",
-      "cues": "DB curls + Tricep extensions; Focus on mind-muscle connection"
-    },
-    "Arms Dips": {
-      "sets": "2-3 each",
-      "reps": "10-15",
-      "cues": "Dips; Focus on mind-muscle connection"
     }
   },
-  "current_program_day": 1,
+  "current_program_day": 5,
   "exercise_images": {
     "Burpees": "exercises/burpees.gif",
     "Burpee": "exercises/burpee.gif",
@@ -160,11 +172,9 @@
     "Y Superman": "exercises/y_superman.gif",
     "Twisting Situp": "exercises/twisting_situp.gif",
     "Russian Twists": "exercises/russian_twists.gif",
-    "Russian Twists2": "exercises/russian_twists2.gif",
     "V Ups": "exercises/v_ups.gif",
     "Hollow hold": "exercises/hollow_hold.gif",
-    "Hanging Leg Raises": "exercises/hanging_leg_raises.gif",
-    "Hanging Leg Raise": "exercises/hanging_leg_raise.gif",
+    "Hanging Leg Raise": "exercises/hanging_leg_raise.jpg",
     "Plank": "exercises/plank.gif",
     "Plank Jacks": "exercises/plank_jacks.gif",
     "Bicycle Crunches": "exercises/bicycle_crunches.gif",
@@ -194,6 +204,7 @@
     "Light Overhead Press": "exercises/light_overhead_press.gif",
     "Lateral Raises": "exercises/lateral_raises.jpg",
     "Arms Curls": "exercises/arms_curls.gif",
-    "Arms Dips": "exercises/arms_dips.gif"
+    "Triceps Dips": "exercises/triceps_dips.jpg",
+    "Overhead Triceps Extensions": "exercises/overhead_triceps_extension.jpg"
   }
 }

@@ -8,15 +8,15 @@ import strength_mode as strength
 st.set_page_config(page_title="Personal Exercise Regime", page_icon="💪", layout="wide")
 
 PROGRAM_DAYS = {
-    1: {"name": "Day A1: Strength (Leg Day)", "type": "strength", "sequence": "Leg Day (Ai)"},
-    2: {"name": "Day B: HIIT / Aerobic", "type": "hiit", "sequence": "Classic HIIT"},
-    3: {"name": "Day C: Rest", "type": "rest"},
-    4: {"name": "Day A2: Strength (Full Body)", "type": "strength", "sequence": "Full Body (Aii)"},
-    5: {"name": "Day B: HIIT / Aerobic", "type": "hiit", "sequence": "Classic HIIT"},
-    6: {"name": "Day C: Rest", "type": "rest"},
-    7: {"name": "Day A3: Strength (Upper Body)", "type": "strength", "sequence": "Upper Body (Aiii)"},
-    8: {"name": "Day B: HIIT / Aerobic", "type": "hiit", "sequence": "Classic HIIT"},
-    9: {"name": "Day C: Rest", "type": "rest"},
+    1: {"name": "Strength (Leg Day)", "type": "strength", "sequence": "Leg Day"},
+    2: {"name": "HIIT / Aerobic", "type": "hiit", "sequence": "Classic HIIT"},
+    3: {"name": "Rest", "type": "rest"},
+    4: {"name": "Strength (Full Body)", "type": "strength", "sequence": "Full Body"},
+    5: {"name": "HIIT / Aerobic", "type": "hiit", "sequence": "Classic HIIT"},
+    6: {"name": "Rest", "type": "rest"},
+    7: {"name": "Strength (Upper Body)", "type": "strength", "sequence": "Upper Body"},
+    8: {"name": "HIIT / Aerobic", "type": "hiit", "sequence": "Classic HIIT"},
+    9: {"name": "Rest", "type": "rest"},
 }
 
 def init_app_state():
