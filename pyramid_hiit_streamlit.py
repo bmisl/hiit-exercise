@@ -3,125 +3,26 @@ import time
 import json
 import random
 from pathlib import Path
-
-STRETCHING_GIFS = [
-    "https://hips.hearstapps.com/hmg-prod/images/child-s-pose-1575475463.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/lunge22.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-tri.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-shoul.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-quad.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-hip.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-ham.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-glu.gif"
-]
-
-# Use 'wide' layout for desktop, let CSS handle mobile
-st.set_page_config(page_title="Pyramid HIIT Timer", page_icon="🔥", layout="wide")
+from shared_utils import STRETCHING_GIFS, load_config, save_config, calculate_total_time, format_time
 
 # ---------------------------
-# Config load/save (UNCHANGED)
+# Session state defaults
 # ---------------------------
-def load_config():
-    # Helper to load default config if file doesn't exist
-    path = Path("hiit_config.json")
-    if path.exists():
-        with open(path, "r") as f:
-            return json.load(f)
-    default = {
-        "work_time": 30, "rest_between_exercises": 45, "rest_between_rounds": 60, "peak_rest": 75,
-        "exercise_sequences": {
-            "Classic HIIT": ["Burpees", "Mountain Climbers", "Jump Squats", "High Knees", "Push-ups"],
-            "Core Focus": ["Plank Jacks", "Russian Twists", "Bicycle Crunches", "Mountain Climbers", "Leg Raises"],
-            "Cardio Blast": ["Jumping Jacks", "High Knees", "Butt Kicks", "Jump Squats", "Burpees"],
-            "Strength & Power": ["Push-ups", "Squat Jumps", "Burpees", "Lunge Jumps", "Pike Push-ups"],
-        },
-        "exercise_images": {
-            "Burpees": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/burpee-1457045324.gif?resize=1400:*",
-            "Mountain Climbers": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/mountainclimber-1472061303.gif?resize=1400:*",
-            "Jump Squats": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquatjump-1457041758.gif?resize=1400:*",
-            "High Knees": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/highkneerun-1457044203.gif?resize=1400:*",
-            "Push-ups": "https://hips.hearstapps.com/hmg-prod/images/pushup-1462808858.gif?resize=1400:*",
-            "Stepup": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/stepup-1457044957.gif?resize=1400:*", 
-            "Jumping Jacks": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/jumpingjack-1457045563.gif?resize=1400:*",
-            "Squat Jumps": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquatjump-1457041758.gif?resize=1400:*",
-            "Y Superman": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/supermany-1472154643.gif",
-            "Twisting Situp": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/situptwisting-1472152218.gif?resize=1400:*",
-            "Russian Twists": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/russiantwistfeetraised-1472133891.gif?resize=1400:*",
-            "Russian Twists2": "https://media4.giphy.com/media/cpKD9u3S25xYL8tcbr/giphy.gif",
-            "V Ups": "https://media1.popsugar-assets.com/files/thumbor/wclUn2vpiB8j1l9Sry5XL35SyLs/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2017/06/05/906/n/1922729/4a427ce25102cba0_V-Ups.gif",
-            "Hollow hold": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/workouts/2016/03/lyinghollowbodyhold-1457044774.gif?crop=1xw:1xh;center,top&resize=480:*",
-            "Hanging Leg Raises": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/workouts/2017/05/hanginglegraise-1496161341.gif",
-            "Plank": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/plank-1457045584.gif?resize=1400:*",
-            "Plank Jacks": "https://media1.popsugar-assets.com/files/thumbor/E5X9t2h9kSYqGlWEe1zxtvusMOY/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2016/05/10/225/n/1922729/e95be01486710f18_8a0b7913bd7d4ec3_PlankJack/i/Plank-Jack.gif",
-            "Bicycle Crunches": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/bicycle-1472058017.gif?resize=980:*",
-            "Crunches": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/crunch-1457102356.gif?crop=1xw:0.75xh;center,top&resize=1200:*",
-            "Bent Leg Raises": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/legraise-1472054568.gif?resize=640:*",
-            "Leg Raises": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/legraisesinglelegalternating-1472061028.gif?crop=1xw:0.75xh;center,top&resize=1200:*",
-            "Standing Leg Raises": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/standinglegraise-1457044676.gif?crop=1xw:1xh;center,top&resize=1200:*",
-            "T Superman": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/supermant-1472154358.gif?resize=1400:*",
-            "Lunge Split Squat With Kettlebell": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/dumbbellbulgariangobletsplitsquat-1457046602.gif",
-            "Lunge Jumps": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/splitjump-1457044565.gif", 
-            "Lunge": "https://media.tenor.com/-YiEMDDCOwoAAAAM/afundo.gif", 
-            "Butt Kicks": "https://spotebi.com/wp-content/uploads/2015/01/butt-kicks-exercise-illustration-spotebi.gif",
-            "Pike Push-ups": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/pikepushup-1456956895.gif?crop=1xw:1xh;center,top&resize=1200:*",
-        },
-    }
-    try:
-        save_config(default) 
-    except:
-        pass
-    return default
-
-def save_config(cfg):
-    path = Path("hiit_config.json")
-    with open(path, "w") as f:
-        json.dump(cfg, f, indent=2)
-
-# ---------------------------
-# TIME CALCULATION HELPERS (UNCHANGED)
-# ---------------------------
-def calculate_total_time(cfg):
-    """Calculates the total duration of the workout in seconds."""
-    W = cfg["work_time"]
-    RE = cfg["rest_between_exercises"]
-    RR = cfg["rest_between_rounds"]
-    RP = cfg["peak_rest"]
-    
-    # Pyramid structure: [1, 2, 3, 4, 5, 4, 3, 2, 1]
-    total_work_intervals = 25
-    total_rest_between_exercise_intervals = 16 
-    total_rest_between_round_intervals = 7 
-    total_peak_rest_intervals = 1 
-
-    total_time = (total_work_intervals * W) + \
-                 (total_rest_between_exercise_intervals * RE) + \
-                 (total_rest_between_round_intervals * RR) + \
-                 (total_peak_rest_intervals * RP) + 10 # 10s initial countdown
-    return total_time
-
-def format_time(seconds):
-    """Formats seconds into MM:SS format."""
-    minutes = int(seconds) // 60
-    seconds = int(seconds) % 60
-    return f"{minutes:02d}:{seconds:02d}"
-
-# ---------------------------
-# Session state defaults (UNCHANGED)
-# ---------------------------
-if "config" not in st.session_state:
-    st.session_state.config = load_config()
-if "workout_started" not in st.session_state:
-    st.session_state.workout_started = False
-if "round" not in st.session_state:
-    st.session_state.round = 1
-if "exercise_index" not in st.session_state:
-    st.session_state.exercise_index = 0
-if "selected_sequence" not in st.session_state:
-    st.session_state.selected_sequence = "Classic HIIT"
-if "total_time_seconds" not in st.session_state:
-    st.session_state.total_time_seconds = 0
-if "elapsed_time_seconds" not in st.session_state:
-    st.session_state.elapsed_time_seconds = 0
+def init_hiit_session():
+    if "config" not in st.session_state:
+        st.session_state.config = load_config()
+    if "workout_started" not in st.session_state:
+        st.session_state.workout_started = False
+    if "round" not in st.session_state:
+        st.session_state.round = 1
+    if "exercise_index" not in st.session_state:
+        st.session_state.exercise_index = 0
+    if "selected_sequence" not in st.session_state:
+        st.session_state.selected_sequence = "Classic HIIT"
+    if "total_time_seconds" not in st.session_state:
+        st.session_state.total_time_seconds = 0
+    if "elapsed_time_seconds" not in st.session_state:
+        st.session_state.elapsed_time_seconds = 0
     
 # ---------------------------
 # Styles (UNCHANGED)
@@ -471,7 +372,7 @@ def show_workout_screen():
             st.session_state.elapsed_time_seconds = 0
             st.session_state.phase = "setup"
             st.rerun()
-        return
+        return "complete"
 
     # Regular rest between rounds
     else:
@@ -497,20 +398,23 @@ def show_workout_screen():
     st.session_state.elapsed_time_seconds += rest_duration
     st.session_state.round += 1
     st.rerun()
+    return "active"
 
 
 # ---------------------------
 # Entrypoint (FIXED)
 # ---------------------------
 def main():
+    init_hiit_session()
     # FIX: Ensure setup screen does not render if workout has started, 
     # preventing the ghosting effect (Issue B).
     if st.session_state.workout_started:
-        show_workout_screen()
-        return
+        return show_workout_screen()
 
     # If the workout hasn't started, show the setup screen.
     show_setup_screen()
+    return "active"
 
 if __name__ == "__main__":
+    st.set_page_config(page_title="Pyramid HIIT Timer", page_icon="🔥", layout="wide")
     main()

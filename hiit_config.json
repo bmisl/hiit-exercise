@@ -38,8 +38,107 @@
       "Press-up",
       "Sit-up",
       "Mountain Climber"
+    ],
+    "Leg Day (Ai)": [
+      "Goblet Squat",
+      "Romanian Deadlift",
+      "Bulgarian Split Squat",
+      "Calf Raises",
+      "Hanging Leg Raise"
+    ],
+    "Full Body (Aii)": [
+      "DB Squat or Deadlift",
+      "Dumbbell Bench Press",
+      "One-Arm Dumbbell Row",
+      "Overhead Press",
+      "Pull-Ups"
+    ],
+    "Upper Body (Aiii)": [
+      "Incline Dumbbell Press",
+      "Chest-Supported Row",
+      "Light Overhead Press",
+      "Lateral Raises",
+      "Arms (Curls/Dips)"
     ]
   },
+  "strength_metadata": {
+    "Goblet Squat": {
+      "sets": "3-4",
+      "reps": "6-12",
+      "cues": "Hold one dumbbell vertically against chest; Feet shoulder-width; Sit down between hips; Knees track over toes; Keep torso tall; Depth: thighs at least parallel"
+    },
+    "Romanian Deadlift": {
+      "sets": "3-4",
+      "reps": "6-10",
+      "cues": "Soft knees; Hinge at hips (push hips back); Keep spine neutral; Lower until hamstrings stretch; Drive hips forward to stand; This is a hinge, not a squat."
+    },
+    "Bulgarian Split Squat": {
+      "sets": "3",
+      "reps": "8-12 each leg",
+      "cues": "Rear foot elevated; Front foot far enough forward for vertical shin; Drop straight down; Slight torso lean is fine; Drive through mid-foot"
+    },
+    "Calf Raises": {
+      "sets": "3-4",
+      "reps": "12-20",
+      "cues": "Full stretch at bottom; Pause 1 second at top; Slow eccentric"
+    },
+    "Hanging Leg Raise": {
+      "sets": "3",
+      "reps": "8-15",
+      "cues": "Control the swing; Lift legs as high as possible; Slow controlled lower"
+    },
+    "DB Squat or Deadlift": {
+      "sets": "4",
+      "reps": "5-8",
+      "cues": "Cycle 1: Squat focus; Cycle 2: Deadlift focus; Heavier than leg day."
+    },
+    "Dumbbell Bench Press": {
+      "sets": "3-4",
+      "reps": "6-10",
+      "cues": "Feet planted; Shoulder blades pulled back; Lower with control; Press slightly inward at top"
+    },
+    "One-Arm Dumbbell Row": {
+      "sets": "3-4",
+      "reps": "8-12 each side",
+      "cues": "One knee + hand on bench; Neutral spine; Pull elbow toward hip (not shoulder)"
+    },
+    "Overhead Press": {
+      "sets": "3",
+      "reps": "6-10",
+      "cues": "Brace core; Press slightly back, not forward; Avoid overextending lower back"
+    },
+    "Pull-Ups": {
+      "sets": "3-4",
+      "reps": "Near failure",
+      "cues": "Full range of motion; Control the descent; Add weight or use band as needed"
+    },
+    "Incline Dumbbell Press": {
+      "sets": "3-4",
+      "reps": "8-12",
+      "cues": "Targets upper chest; Feet planted; Controlled movement"
+    },
+    "Chest-Supported Row": {
+      "sets": "3-4",
+      "reps": "8-12",
+      "cues": "Reduces lower back fatigue; Pull elbows back; Squeeze shoulder blades"
+    },
+    "Light Overhead Press": {
+      "sets": "3",
+      "reps": "8-12",
+      "cues": "Lighter than full-body day; Focus on form and control"
+    },
+    "Lateral Raises": {
+      "sets": "3",
+      "reps": "12-20",
+      "cues": "Light weight, strict form; Up to shoulder height; Control the descent"
+    },
+    "Arms (Curls/Dips)": {
+      "sets": "2-3 each",
+      "reps": "10-15",
+      "cues": "DB curls + Tricep extensions or Dips; Focus on mind-muscle connection"
+    }
+  },
+  "current_program_day": 1,
   "exercise_images": {
     "Burpees": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/burpee-1457045324.gif?resize=1400:*",
     "Burpee": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/burpee-1457045324.gif?resize=1400:*",
@@ -59,6 +158,7 @@
     "V Ups": "https://media1.popsugar-assets.com/files/thumbor/wclUn2vpiB8j1l9Sry5XL35SyLs/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2017/06/05/906/n/1922729/4a427ce25102cba0_V-Ups.gif",
     "Hollow hold": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/workouts/2016/03/lyinghollowbodyhold-1457044774.gif?crop=1xw:1xh;center,top&resize=480:*",
     "Hanging Leg Raises": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/workouts/2017/05/hanginglegraise-1496161341.gif",
+    "Hanging Leg Raise": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/workouts/2017/05/hanginglegraise-1496161341.gif",
     "Plank": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/plank-1457045584.gif?resize=1400:*",
     "Plank Jacks": "https://media1.popsugar-assets.com/files/thumbor/E5X9t2h9kSYqGlWEe1zxtvusMOY/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2016/05/10/225/n/1922729/e95be01486710f18_8a0b7913bd7d4ec3_PlankJack/i/Plank-Jack.gif",
     "Bicycle Crunches": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/08/bicycle-1472058017.gif?resize=980:*",
@@ -73,6 +173,20 @@
     "Lunge Jumps": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/splitjump-1457044565.gif",
     "Lunge": "https://media.tenor.com/-YiEMDDCOwoAAAAM/afundo.gif",
     "Butt Kicks": "https://spotebi.com/wp-content/uploads/2015/01/butt-kicks-exercise-illustration-spotebi.gif",
-    "Pike Push-ups": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/pikepushup-1456956895.gif?crop=1xw:1xh;center,top&resize=1200:*"
+    "Pike Push-ups": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/pikepushup-1456956895.gif?crop=1xw:1xh;center,top&resize=1200:*",
+    "Goblet Squat": "https://hips.hearstapps.com/menshealth-uk/main/assets/dumbbellgoblet.gif",
+    "Romanian Deadlift": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/dumbbelldeadlift-1457044319.gif",
+    "Bulgarian Split Squat": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/dumbbellbulgariangobletsplitsquat-1457046602.gif",
+    "Calf Raises": "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Calf-Raise.gif",
+    "DB Squat or Deadlift": "https://hips.hearstapps.com/hmg-prod/images/workouts/2017/04/kettlebellfrontsquat-1492109134.gif",
+    "Dumbbell Bench Press": "https://hips.hearstapps.com/hmg-prod/images/workouts/2017/04/inclinedumbbellbenchpress-1492108229.gif",
+    "One-Arm Dumbbell Row": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzI1emhoZ2YwaTBjOGdldDhkNWQwOWs0b3JjdXhnanBqbXExM2gzNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/irCqptSYgMPX7nnJaj/giphy.gif",
+    "Overhead Press": "https://i.pinimg.com/originals/2e/43/e0/2e43e04410c77c1824e132bc852979fe.gif",
+    "Pull-Ups": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/chinup-1457101678.gif",
+    "Incline Dumbbell Press": "https://hips.hearstapps.com/hmg-prod/images/workouts/2017/04/inclinedumbbellbenchpress-1492108229.gif",
+    "Chest-Supported Row": "https://hips.hearstapps.com/hmg-prod/images/workouts/2017/04/chestsupportedrow-1492110815.gif",
+    "Light Overhead Press": "https://i.pinimg.com/originals/2e/43/e0/2e43e04410c77c1824e132bc852979fe.gif",
+    "Lateral Raises": "https://hips.hearstapps.com/hmg-prod/images/lateral-raises-1667563218.jpg",
+    "Arms (Curls/Dips)": "https://hips.hearstapps.com/menshealth-uk/main/assets/curl.gif"
   }
 }
