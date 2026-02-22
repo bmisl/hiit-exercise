@@ -61,14 +61,10 @@ def show_strength_screen(sequence_key):
     with col2:
         st.markdown(f"**Sets:** {metadata.get('sets', 'N/A')}")
         st.markdown(f"**Reps:** {metadata.get('reps', 'N/A')}")
-        st.markdown("**Cues:**")
-        cues_list = metadata.get('cues', "").split(";")
-        cues_markdown = "\n".join([f"- {cue.strip()}" for cue in cues_list if cue.strip()])
-        st.markdown(cues_markdown)
 
         st.divider()
-        
-        # Set tracking
+
+        # Set tracking (moved up)
         target_sets_str = metadata.get('sets', "3").split("-")[-1] # take max sets
         try:
             target_sets = int(target_sets_str)
@@ -85,5 +81,12 @@ def show_strength_screen(sequence_key):
                 st.session_state.strength_set_index = 0
                 st.toast(f"Exercise {current_ex} complete!")
             st.rerun()
+
+        st.divider()
+
+        st.markdown("**Cues:**")
+        cues_list = metadata.get('cues', "").split(";")
+        cues_markdown = "\n".join([f"- {cue.strip()}" for cue in cues_list if cue.strip()])
+        st.markdown(cues_markdown)
 
     return "active"
