@@ -12,8 +12,6 @@ def init_strength_session():
         st.session_state.strength_exercise_index = 0
     if "strength_set_index" not in st.session_state:
         st.session_state.strength_set_index = 0
-    if "rest_start_time" not in st.session_state:
-        st.session_state.rest_start_time = None
 
 def show_strength_screen(sequence_key):
     init_strength_session()
@@ -64,9 +62,9 @@ def show_strength_screen(sequence_key):
         st.markdown(f"**Sets:** {metadata.get('sets', 'N/A')}")
         st.markdown(f"**Reps:** {metadata.get('reps', 'N/A')}")
         st.markdown("**Cues:**")
-        cues = metadata.get('cues', "").split(";")
-        for cue in cues:
-            st.markdown(f"- {cue.strip()}")
+        cues_list = metadata.get('cues', "").split(";")
+        cues_markdown = "\n".join([f"- {cue.strip()}" for cue in cues_list if cue.strip()])
+        st.markdown(cues_markdown)
 
         st.divider()
         
@@ -80,32 +78,12 @@ def show_strength_screen(sequence_key):
         current_set = st.session_state.strength_set_index + 1
         st.markdown(f"### Set {current_set} of {target_sets}")
         
-        if st.session_state.rest_start_time:
-            rest_duration = 60 # Default rest 60s
-            elapsed = time.time() - st.session_state.rest_start_time
-            remaining = int(rest_duration - elapsed)
-            
-            if remaining > 0:
-                st.warning(f"Rest Timer: {remaining}s")
-                st.progress(elapsed / rest_duration)
-                if st.button("Skip Rest"):
-                    st.session_state.rest_start_time = None
-                    st.rerun()
-                time.sleep(1)
-                st.rerun()
-            else:
-                st.session_state.rest_start_time = None
-                st.success("Rest complete! Start next set.")
-                st.rerun()
-        else:
-            if st.button("✅ SET COMPLETE", type="primary", use_container_width=True):
-                st.session_state.strength_set_index += 1
-                if st.session_state.strength_set_index >= target_sets:
-                    st.session_state.strength_exercise_index += 1
-                    st.session_state.strength_set_index = 0
-                    st.toast(f"Exercise {current_ex} complete!")
-                else:
-                    st.session_state.rest_start_time = time.time()
-                st.rerun()
+        if st.button("✅ SET COMPLETE", type="primary", use_container_width=True):
+            st.session_state.strength_set_index += 1
+            if st.session_state.strength_set_index >= target_sets:
+                st.session_state.strength_exercise_index += 1
+                st.session_state.strength_set_index = 0
+                st.toast(f"Exercise {current_ex} complete!")
+            st.rerun()
 
     return "active"
