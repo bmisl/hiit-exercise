@@ -31,6 +31,4 @@ Thumbs.db
 *.tmp
 
 # --- Data folders ---
-exercises/
-stretches/
-
+# Images now tracked in exercises/

@@ -2,14 +2,14 @@ import json
 from pathlib import Path
 
 STRETCHING_GIFS = [
-    "https://hips.hearstapps.com/hmg-prod/images/child-s-pose-1575475463.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/lunge22.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-tri.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-shoul.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-quad.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-hip.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-ham.gif",
-    "https://hips.hearstapps.com/menshealth-uk/main/assets/s-glu.gif"
+    "exercises/stretch_child_pose.gif",
+    "exercises/stretch_lunge_stretch.gif",
+    "exercises/stretch_tricep_stretch.gif",
+    "exercises/stretch_shoulder_stretch.gif",
+    "exercises/stretch_quad_stretch.gif",
+    "exercises/stretch_hip_stretch.gif",
+    "exercises/stretch_hamstring_stretch.gif",
+    "exercises/stretch_glute_stretch.gif"
 ]
 
 def load_config():
