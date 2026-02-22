@@ -58,7 +58,8 @@
       "Chest-Supported Row",
       "Light Overhead Press",
       "Lateral Raises",
-      "Arms (Curls/Dips)"
+      "Arms Curls",
+      "Arms Dips"
     ]
   },
   "strength_metadata": {
@@ -132,10 +133,15 @@
       "reps": "12-20",
       "cues": "Light weight, strict form; Up to shoulder height; Control the descent"
     },
-    "Arms (Curls/Dips)": {
+    "Arms Curls": {
       "sets": "2-3 each",
       "reps": "10-15",
-      "cues": "DB curls + Tricep extensions or Dips; Focus on mind-muscle connection"
+      "cues": "DB curls + Tricep extensions; Focus on mind-muscle connection"
+    },
+    "Arms Dips": {
+      "sets": "2-3 each",
+      "reps": "10-15",
+      "cues": "Dips; Focus on mind-muscle connection"
     }
   },
   "current_program_day": 1,
@@ -187,6 +193,7 @@
     "Chest-Supported Row": "exercises/chest-supported_row.gif",
     "Light Overhead Press": "exercises/light_overhead_press.gif",
     "Lateral Raises": "exercises/lateral_raises.jpg",
-    "Arms (Curls/Dips)": "exercises/arms_curlsdips.gif"
+    "Arms Curls": "exercises/arms_curls.gif",
+    "Arms Dips": "exercises/arms_dips.gif"
   }
 }
