@@ -47,7 +47,7 @@
       "Hanging Leg Raise"
     ],
     "Full Body (Aii)": [
-      "DB Squat or Deadlift",
+      "DB Squat",
       "Dumbbell Bench Press",
       "One-Arm Dumbbell Row",
       "Overhead Press",
@@ -87,10 +87,10 @@
       "reps": "8-15",
       "cues": "Control the swing; Lift legs as high as possible; Slow controlled lower"
     },
-    "DB Squat or Deadlift": {
+    "DB Squat": {
       "sets": "4",
       "reps": "5-8",
-      "cues": "Cycle 1: Squat focus; Cycle 2: Deadlift focus; Heavier than leg day."
+      "cues": "Cycle 1: Squat focus; Cycle 2: Deadlift focus (if chose RDL); Heavier than leg day."
     },
     "Dumbbell Bench Press": {
       "sets": "3-4",
@@ -178,7 +178,7 @@
     "Romanian Deadlift": "exercises/romanian_deadlift.gif",
     "Bulgarian Split Squat": "exercises/bulgarian_split_squat.gif",
     "Calf Raises": "exercises/calf_raises.gif",
-    "DB Squat or Deadlift": "exercises/db_squat_or_deadlift.gif",
+    "DB Squat": "exercises/db_squat.gif",
     "Dumbbell Bench Press": "exercises/dumbbell_bench_press.gif",
     "One-Arm Dumbbell Row": "exercises/one-arm_dumbbell_row.gif",
     "Overhead Press": "exercises/overhead_press.gif",
