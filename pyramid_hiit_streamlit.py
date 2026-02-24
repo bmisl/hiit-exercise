@@ -32,7 +32,16 @@ def inject_hiit_css():
     <style>
     /* Sidebar Transparency (40%) */
     [data-testid="stSidebar"] {
-        background-color: rgba(240, 242, 246, 0.4); 
+        background-color: rgba(220, 220, 220, 0.95); 
+        color: black !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p, 
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] span,
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] li {
+        color: black !important;
+    }
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+        color: black !important;
     }
 
     .top-timer {
@@ -158,6 +167,23 @@ def inject_hiit_css():
     img {
         border-radius: 6px;
     }
+
+    /* Invisible button overlay for skipping */
+    .skip-btn-container {
+        position: relative;
+        width: 100%;
+    }
+    .skip-btn-container button {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        z-index: 1000 !important;
+        border: none !important;
+        cursor: pointer;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -184,10 +210,18 @@ def show_setup_screen():
 
     c1, c2 = st.columns([2,1])
     with c1:
-        keys = list(st.session_state.config["exercise_sequences"].keys())
-        sel = st.selectbox("Choose a sequence:", keys, index=keys.index(st.session_state.selected_sequence))
+        all_sequences = st.session_state.config["exercise_sequences"]
+        categories = st.session_state.config.get("sequence_categories", {})
+        
+        # Filter for HIIT sequences
+        hiit_sequences = [k for k, v in categories.items() if v == "hiit"]
+        if not hiit_sequences:
+            # Fallback if no categories or none match
+            hiit_sequences = list(all_sequences.keys())
+            
+        sel = st.selectbox("Choose a sequence:", hiit_sequences, index=0 if st.session_state.selected_sequence not in hiit_sequences else hiit_sequences.index(st.session_state.selected_sequence))
         st.session_state.selected_sequence = sel
-        exercises = st.session_state.config["exercise_sequences"][sel]
+        exercises = all_sequences[sel]
         images = st.session_state.config["exercise_images"]
 
         # Visual layout for thumbnails
@@ -243,13 +277,15 @@ def show_workout_screen():
     cfg = st.session_state.config
     exercises = cfg["exercise_sequences"][st.session_state.selected_sequence]
 
-    # --- Define all placeholders early so they always exist ---
-    progress_ph = st.empty()        # for total workout time at completion
-    progress_text = st.empty()      # for live elapsed time text
-    progress_bar = st.empty()       # for live progress bar
-    labels_ph = st.empty()          # for WORK / REST labels
+    if "workout_phase" not in st.session_state:
+        st.session_state.workout_phase = "prepare"
 
-    # Layout columns for main area
+    # --- Define all placeholders ---
+    progress_ph = st.empty()
+    progress_text = st.empty()
+    progress_bar = st.empty()
+    labels_ph = st.empty()
+
     gif_col, timer_col = st.columns([2, 1])
     with gif_col:
         gif_ph_name = st.empty()
@@ -257,160 +293,167 @@ def show_workout_screen():
     with timer_col:
         timer_ph = st.empty()
 
-    # --- Determine current exercise and list for this round ---
+    # Determine current exercise
     curr_list = round_exercises(st.session_state.round, exercises)
-    st.session_state.exercise_index = min(
-        st.session_state.exercise_index, len(curr_list) - 1
-    )
+    st.session_state.exercise_index = min(st.session_state.exercise_index, len(curr_list) - 1)
     current_exercise = curr_list[st.session_state.exercise_index]
 
-    # --- Sidebar: show all exercises and pyramid ---
+    # Sidebar
     with st.sidebar:
         st.markdown("### 🏋️ Exercises")
         for i, ex in enumerate(exercises, 1):
             prefix = "➡️ " if ex == current_exercise else ""
-            st.markdown(f"{prefix}{i}. **{ex}**")
+            st.markdown(f"<div style='color: black;'>{prefix}{i}. **{ex}**</div>", unsafe_allow_html=True)
         st.markdown("---")
         st.markdown("### 🧱 Pyramid Progress")
         show_pyramid_progress()
 
-    # --- Timer values ---
+    # Timer values
     total_time_str = format_time(st.session_state.total_time_seconds)
-    elapsed_time_sec = st.session_state.elapsed_time_seconds
-    current_round = st.session_state.round
+    
+    # Helper for rendering interactive image
+    def render_skip_image(img_url, label=None):
+        if label:
+            gif_ph_name.markdown(f"<div class='exercise-name'>{label}</div>", unsafe_allow_html=True)
+        
+        with gif_ph.container():
+            st.markdown("<div class='skip-btn-container'>", unsafe_allow_html=True)
+            if st.button("SKIP", key=f"skip_{st.session_state.elapsed_time_seconds}", use_container_width=True):
+                st.session_state.skip_triggered = True
+                st.rerun()
+            if img_url:
+                st.image(img_url, use_container_width=True)
+            else:
+                st.markdown("<div class='gif-blank'></div>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    # Check for skip from previous run
+    if st.session_state.get("skip_triggered"):
+        st.session_state.skip_triggered = False
+        if st.session_state.workout_phase == "prepare":
+            st.session_state.workout_phase = "work"
+            st.session_state.elapsed_time_seconds = 10
+        elif st.session_state.workout_phase == "work":
+            st.session_state.elapsed_time_seconds += cfg["work_time"]
+            st.session_state.exercise_index += 1
+            if st.session_state.exercise_index < len(curr_list):
+                st.session_state.workout_phase = "rest_exercise"
+            else:
+                st.session_state.workout_phase = "rest_round"
+        elif st.session_state.workout_phase == "rest_exercise":
+            st.session_state.elapsed_time_seconds += cfg["rest_between_exercises"]
+            st.session_state.workout_phase = "work"
+        elif st.session_state.workout_phase == "rest_round":
+            st.session_state.elapsed_time_seconds += (cfg["peak_rest"] if st.session_state.round == 5 else cfg["rest_between_rounds"])
+            st.session_state.round += 1
+            st.session_state.exercise_index = 0
+            if st.session_state.round > 9:
+                st.session_state.workout_phase = "complete"
+            else:
+                st.session_state.workout_phase = "work"
+        st.rerun()
 
     # -------------------------
-    # INITIAL PREPARATION (10s)
+    # PHASE EXECUTION
     # -------------------------
-    if st.session_state.elapsed_time_seconds == 0:
-        labels_ph.markdown(
-            "<div class='phase-labels'><span class='label-active'>🚀 PREPARE</span></div>",
-            unsafe_allow_html=True,
-        )
-        gif_ph_name.markdown(f"<div class='exercise-name'>GET READY!</div>", unsafe_allow_html=True)
+    if st.session_state.workout_phase == "prepare":
+        labels_ph.markdown("<div class='phase-labels'><span class='label-active'>🚀 PREPARE</span></div>", unsafe_allow_html=True)
         img_url = cfg["exercise_images"].get(current_exercise)
-        if img_url:
-            gif_ph.image(img_url, use_container_width=True)
+        render_skip_image(img_url, "GET READY!")
         
         for t in range(10, 0, -1):
             elapsed = 10 - t
             progress_text.markdown(f"### ⏱ {format_time(elapsed)} / {total_time_str}")
-            progress_val = min(1.0, elapsed / st.session_state.total_time_seconds)
-            progress_bar.progress(progress_val)
+            progress_bar.progress(min(1.0, elapsed / st.session_state.total_time_seconds))
             timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
             time.sleep(1)
+        st.session_state.workout_phase = "work"
         st.session_state.elapsed_time_seconds = 10
+        st.rerun()
 
-    # -------------------------
-    # WORK PHASE
-    # -------------------------
-    labels_ph.markdown(
-        "<div class='phase-labels'><span class='label-active'>⚡ WORK</span> | "
-        "<span class='label-faded'>REST 😮‍💨</span></div>",
-        unsafe_allow_html=True,
-    )
-    gif_ph_name.markdown(f"<div class='exercise-name'>💪 {current_exercise}</div>", unsafe_allow_html=True)
+    elif st.session_state.workout_phase == "work":
+        labels_ph.markdown("<div class='phase-labels'><span class='label-active'>⚡ WORK</span> | <span class='label-faded'>REST 😮‍💨</span></div>", unsafe_allow_html=True)
+        img_url = cfg["exercise_images"].get(current_exercise)
+        render_skip_image(img_url, f"💪 {current_exercise}")
+        
+        work_time = cfg["work_time"]
+        for t in range(work_time, 0, -1):
+            current_elapsed = st.session_state.elapsed_time_seconds + (work_time - t)
+            progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
+            progress_bar.progress(min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds)))
+            timer_ph.markdown(f"<div class='big-timer work-phase'>{t}</div>", unsafe_allow_html=True)
+            time.sleep(1)
+        
+        st.session_state.elapsed_time_seconds += work_time
+        st.session_state.exercise_index += 1
+        if st.session_state.exercise_index < len(curr_list):
+            st.session_state.workout_phase = "rest_exercise"
+        else:
+            st.session_state.workout_phase = "rest_round"
+        st.rerun()
 
-    img_url = cfg["exercise_images"].get(current_exercise)
-    if img_url:
-        gif_ph.image(img_url, use_container_width=True)
-    else:
-        gif_ph.markdown("<div class='gif-blank'></div>", unsafe_allow_html=True)
-
-    work_time = cfg["work_time"]
-    for t in range(work_time, 0, -1):
-        current_elapsed = st.session_state.elapsed_time_seconds + (work_time - t)
-        progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
-        progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
-        progress_bar.progress(progress_value)
-        timer_ph.markdown(f"<div class='big-timer work-phase'>{t}</div>", unsafe_allow_html=True)
-        time.sleep(1)
-
-    st.session_state.elapsed_time_seconds += work_time
-    st.session_state.exercise_index += 1
-
-    # -------------------------
-    # REST PHASE
-    # -------------------------
-    labels_ph.markdown(
-        "<div class='phase-labels'><span class='label-faded'>⚡ WORK</span> | "
-        "<span class='label-active'>REST 😮‍💨</span></div>",
-        unsafe_allow_html=True,
-    )
-    gif_ph.markdown("<div class='gif-blank'></div>", unsafe_allow_html=True)
-
-    # Rest between exercises
-    if st.session_state.exercise_index < len(curr_list):
+    elif st.session_state.workout_phase == "rest_exercise":
+        labels_ph.markdown("<div class='phase-labels'><span class='label-faded'>⚡ WORK</span> | <span class='label-active'>REST 😮‍💨</span></div>", unsafe_allow_html=True)
         next_exercise = curr_list[st.session_state.exercise_index]
-        gif_ph_name.markdown(f"<div class='exercise-name'>NEXT: {next_exercise}</div>", unsafe_allow_html=True)
         rest_duration = cfg["rest_between_exercises"]
-
+        
         for t in range(rest_duration, 0, -1):
-            # Show/Change stretching GIF every 15 seconds
             if t == rest_duration or t % 15 == 0:
-                gif_ph.image(random.choice(STRETCHING_GIFS), use_container_width=True)
-
+                render_skip_image(random.choice(STRETCHING_GIFS), f"NEXT: {next_exercise}")
+            
             current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
             progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
-            progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
-            progress_bar.progress(progress_value)
+            progress_bar.progress(min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds)))
+            timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
+            time.sleep(1)
+            
+        st.session_state.elapsed_time_seconds += rest_duration
+        st.session_state.workout_phase = "work"
+        st.rerun()
+
+    elif st.session_state.workout_phase == "rest_round":
+        if st.session_state.round == 9:
+            st.session_state.workout_phase = "complete"
+            st.rerun()
+
+        labels_ph.markdown("<div class='phase-labels'><span class='label-faded'>⚡ WORK</span> | <span class='label-active'>REST 😮‍💨</span></div>", unsafe_allow_html=True)
+        
+        if st.session_state.round == 5:
+            rest_duration = cfg["peak_rest"]
+            label = f"PEAK REST ⛰️: Round {st.session_state.round} of 9"
+        else:
+            rest_duration = cfg["rest_between_rounds"]
+            label = f"REST BETWEEN ROUNDS: Round {st.session_state.round} of 9"
+
+        for t in range(rest_duration, 0, -1):
+            if t == rest_duration or t % 15 == 0:
+                render_skip_image(random.choice(STRETCHING_GIFS), label)
+            
+            current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
+            progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
+            progress_bar.progress(min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds)))
             timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
             time.sleep(1)
 
         st.session_state.elapsed_time_seconds += rest_duration
+        st.session_state.round += 1
+        st.session_state.exercise_index = 0
+        st.session_state.workout_phase = "work"
         st.rerun()
 
-    # Finished the round
-    st.session_state.exercise_index = 0
-
-    # Peak rest after round 5
-    if current_round == 5:
-        gif_ph_name.markdown(
-            f"<div class='exercise-name'>PEAK REST ⛰️: Round {current_round} of 9</div>",
-            unsafe_allow_html=True,
-        )
-        rest_duration = cfg["peak_rest"]
-
-    # Workout complete after round 9
-    elif current_round == 9:
+    elif st.session_state.workout_phase == "complete":
         st.balloons()
         st.success("🎉 WORKOUT COMPLETE! Amazing job!")
-
         total_time_str = format_time(st.session_state.total_time_seconds)
         progress_ph.markdown(f"### Total Workout Time: **{total_time_str}**")
         st.progress(1.0)
-
         if st.button("Back to Setup"):
             st.session_state.workout_started = False
             st.session_state.elapsed_time_seconds = 0
-            st.session_state.phase = "setup"
+            st.session_state.workout_phase = "prepare"
             st.rerun()
         return "complete"
 
-    # Regular rest between rounds
-    else:
-        gif_ph_name.markdown(
-            f"<div class='exercise-name'>REST BETWEEN ROUNDS: Round {current_round} of 9</div>",
-            unsafe_allow_html=True,
-        )
-        rest_duration = cfg["rest_between_rounds"]
-
-    # Run the appropriate rest timer (peak or regular)
-    for t in range(rest_duration, 0, -1):
-        # Show/Change stretching GIF every 15 seconds
-        if t == rest_duration or t % 15 == 0:
-            gif_ph.image(random.choice(STRETCHING_GIFS), use_container_width=True)
-
-        current_elapsed = st.session_state.elapsed_time_seconds + (rest_duration - t)
-        progress_text.markdown(f"### ⏱ {format_time(current_elapsed)} / {total_time_str}")
-        progress_value = min(1.0, max(0.0, current_elapsed / st.session_state.total_time_seconds))
-        progress_bar.progress(progress_value)
-        timer_ph.markdown(f"<div class='big-timer rest-phase'>{t}</div>", unsafe_allow_html=True)
-        time.sleep(1)
-
-    st.session_state.elapsed_time_seconds += rest_duration
-    st.session_state.round += 1
-    st.rerun()
     return "active"
 
 
