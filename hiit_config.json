@@ -6,7 +6,7 @@
   "exercise_sequences": {
     "Classic HIIT": [
       "Burpees",
-      "Mountain Climbers",
+      "Mountain Climber",
       "Jump Squats",
       "High Knees",
       "Push-ups"
@@ -15,7 +15,7 @@
       "Plank Jacks",
       "Russian Twists",
       "Bicycle Crunches",
-      "Mountain Climbers",
+      "Mountain Climber",
       "Leg Raises"
     ],
     "Cardio Blast": [
@@ -34,7 +34,7 @@
     ],
     "HIIT Lunges": [
       "Dumbbell Lunge",
-      "Burpee",
+      "Burpees",
       "Press-up",
       "Sit-up",
       "Mountain Climber"
@@ -166,11 +166,9 @@
       "cues": "Light weight, strict form; Up to shoulder height; Control the descent"
     }
   },
-  "current_program_day": 5,
+  "current_program_day": 4,
   "exercise_images": {
     "Burpees": "exercises/burpees.gif",
-    "Burpee": "exercises/burpee.gif",
-    "Mountain Climbers": "exercises/mountain_climbers.gif",
     "Mountain Climber": "exercises/mountain_climber.gif",
     "Jump Squats": "exercises/jump_squats.gif",
     "High Knees": "exercises/high_knees.gif",

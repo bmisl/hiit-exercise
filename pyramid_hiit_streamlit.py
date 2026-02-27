@@ -298,12 +298,16 @@ def show_workout_screen():
     st.session_state.exercise_index = min(st.session_state.exercise_index, len(curr_list) - 1)
     current_exercise = curr_list[st.session_state.exercise_index]
 
-    # Sidebar
+    # Sidebar — styled to match strength mode
     with st.sidebar:
-        st.markdown("### 🏋️ Exercises")
-        for i, ex in enumerate(exercises, 1):
-            prefix = "➡️ " if ex == current_exercise else ""
-            st.markdown(f"<div style='color: black;'>{prefix}{i}. **{ex}**</div>", unsafe_allow_html=True)
+        st.title("🔥 HIIT Workout")
+        st.markdown(f"### {st.session_state.selected_sequence}")
+        for i, ex in enumerate(exercises):
+            if ex == current_exercise:
+                prefix = "➡️ "
+            else:
+                prefix = "⚪ "
+            st.markdown(f"{prefix}{ex}")
         st.markdown("---")
         st.markdown("### 🧱 Pyramid Progress")
         show_pyramid_progress()
@@ -311,21 +315,35 @@ def show_workout_screen():
     # Timer values
     total_time_str = format_time(st.session_state.total_time_seconds)
     
-    # Helper for rendering interactive image
+    # Helper for rendering interactive image — invisible tap overlay (like strength mode)
     def render_skip_image(img_url, label=None):
         if label:
             gif_ph_name.markdown(f"<div class='exercise-name'>{label}</div>", unsafe_allow_html=True)
         
         with gif_ph.container():
-            st.markdown("<div class='skip-btn-container'>", unsafe_allow_html=True)
-            if st.button("SKIP", key=f"skip_{st.session_state.elapsed_time_seconds}", use_container_width=True):
+            st.markdown("""
+                <style>
+                /* Invisible tap overlay for HIIT image */
+                [data-testid="stColumn"]:nth-of-type(1) button {
+                    position: absolute !important;
+                    height: 400px !important;
+                    width: 100% !important;
+                    opacity: 0 !important;
+                    z-index: 1000 !important;
+                    border: none !important;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+            if st.button("Skip", key=f"skip_{st.session_state.elapsed_time_seconds}", use_container_width=True):
                 st.session_state.skip_triggered = True
                 st.rerun()
             if img_url:
                 st.image(img_url, use_container_width=True)
             else:
                 st.markdown("<div class='gif-blank'></div>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
 
     # Check for skip from previous run
     if st.session_state.get("skip_triggered"):
